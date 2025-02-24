@@ -12,7 +12,7 @@ enum CreationError {
     Zero,
 }
 
-// A custom error type that we will be using in `PositiveNonzeroInteger::parse`.
+// A custom error type that combines `ParseIntError` and `CreationError`
 #[derive(PartialEq, Debug)]
 enum ParsePosNonzeroError {
     Creation(CreationError),
@@ -24,8 +24,10 @@ impl ParsePosNonzeroError {
         Self::Creation(err)
     }
 
-    // TODO: Add another error conversion function here.
-    // fn from_parse_int(???) -> Self { ??? }
+    // Convert `ParseIntError` into `ParsePosNonzeroError`
+    fn from_parse_int(err: ParseIntError) -> Self {
+        Self::ParseInt(err)
+    }
 }
 
 #[derive(PartialEq, Debug)]
@@ -41,15 +43,25 @@ impl PositiveNonzeroInteger {
     }
 
     fn parse(s: &str) -> Result<Self, ParsePosNonzeroError> {
-        // TODO: change this to return an appropriate error instead of panicking
-        // when `parse()` returns an error.
-        let x: i64 = s.parse().unwrap();
+        // Corrected: Properly handle parsing errors instead of using `unwrap()`
+        let x: i64 = s.parse().map_err(ParsePosNonzeroError::from_parse_int)?;
+        
+        // Convert CreationError into ParsePosNonzeroError
         Self::new(x).map_err(ParsePosNonzeroError::from_creation)
     }
 }
 
 fn main() {
-    // You can optionally experiment here.
+    // Example usage
+    match PositiveNonzeroInteger::parse("42") {
+        Ok(num) => println!("Parsed successfully: {:?}", num),
+        Err(err) => println!("Error: {:?}", err),
+    }
+
+    match PositiveNonzeroInteger::parse("not a number") {
+        Ok(num) => println!("Parsed successfully: {:?}", num),
+        Err(err) => println!("Error: {:?}", err),
+    }
 }
 
 #[cfg(test)]
