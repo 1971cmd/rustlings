@@ -20,14 +20,23 @@ fn total_cost(item_quantity: &str) -> Result<i32, ParseIntError> {
     let processing_fee = 1;
     let cost_per_item = 5;
 
-    // TODO: Handle the error case as described above.
-    let qty = item_quantity.parse::<i32>();
+    // Attempt to parse the string as an integer and return early if it fails
+    let qty = item_quantity.parse::<i32>()?;
 
     Ok(qty * cost_per_item + processing_fee)
 }
 
 fn main() {
-    // You can optionally experiment here.
+    // Example usage
+    match total_cost("3") {
+        Ok(cost) => println!("Total cost: {}", cost),
+        Err(err) => println!("Error: {}", err),
+    }
+
+    match total_cost("beep boop") {
+        Ok(cost) => println!("Total cost: {}", cost),
+        Err(err) => println!("Error: {}", err),
+    }
 }
 
 #[cfg(test)]
