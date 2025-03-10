@@ -1,23 +1,32 @@
-trait Licensed {
-    fn licensing_info(&self) -> String {
-        "Default license".to_string()
+trait SomeTrait {
+    fn some_function(&self) -> bool {
+        true
     }
 }
 
-struct SomeSoftware;
-struct OtherSoftware;
+trait OtherTrait {
+    fn other_function(&self) -> bool {
+        true
+    }
+}
 
-impl Licensed for SomeSoftware {}
-impl Licensed for OtherSoftware {}
+struct SomeStruct;
+impl SomeTrait for SomeStruct {}
+impl OtherTrait for SomeStruct {}
+
+struct OtherStruct;
+impl SomeTrait for OtherStruct {}
+impl OtherTrait for OtherStruct {}
 
 // TODO: Fix the compiler error by only changing the signature of this function.
-fn compare_license_types<T: Licensed, U: Licensed>(software1: T, software2: U) -> bool {
-    software1.licensing_info() == software2.licensing_info()
+fn some_func<T: SomeTrait + OtherTrait>(item: T) -> bool {
+    item.some_function() && item.other_function()
 }
 
 fn main() {
     // You can optionally experiment here.
-     println!("{}", compare_license_types(SomeSoftware, OtherSoftware));
+    println!("{}", some_func(SomeStruct)); 
+    println!("{}", some_func(OtherStruct)); 
 }
 
 #[cfg(test)]
@@ -25,12 +34,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn compare_license_information() {
-        assert!(compare_license_types(SomeSoftware, OtherSoftware));
-    }
-
-    #[test]
-    fn compare_license_information_backwards() {
-        assert!(compare_license_types(OtherSoftware, SomeSoftware));
+    fn test_some_func() {
+        assert!(some_func(SomeStruct));
+        assert!(some_func(OtherStruct));
     }
 }
