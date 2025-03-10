@@ -4,9 +4,17 @@ trait AppendBar {
 
 // TODO: Implement the trait `AppendBar` for a vector of strings.
 // `append_bar` should push the string "Bar" into the vector.
+impl AppendBar for Vec<String> {
+    fn append_bar(mut self) -> Self {
+        self.push(String::from("Bar")); // Push "Bar" into the vector
+        self
+    }
+}
 
 fn main() {
     // You can optionally experiment here.
+     let mut foo = vec![String::from("Foo")].append_bar();
+    println!("{:?}", foo);
 }
 
 #[cfg(test)]
