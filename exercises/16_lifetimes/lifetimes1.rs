@@ -1,9 +1,3 @@
-// The Rust compiler needs to know how to check whether supplied references are
-// valid, so that it can let the programmer know if a reference is at risk of
-// going out of scope before it is used. Remember, references are borrows and do
-// not own their own data. What if their owner goes out of scope?
-
-// TODO: Fix the compiler error by updating the function signature.
 // Add a lifetime parameter `'a` to specify that the returned reference
 // has the same lifetime as the input references.
 fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
