@@ -3,7 +3,6 @@
 // the progress is the value. Two counting functions were created to count the
 // number of exercises with a given progress. Recreate this counting
 // functionality using iterators. Try to not use imperative loops (for/while).
-
 use std::collections::HashMap;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -28,6 +27,7 @@ fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
 fn count_iterator(map: &HashMap<String, Progress>, value: Progress) -> usize {
     // `map` is a hash map with `String` keys and `Progress` values.
     // map = { "variables1": Complete, "from_str": None, … }
+    map.values().filter(|&val| *val == value).count()
 }
 
 fn count_collection_for(collection: &[HashMap<String, Progress>], value: Progress) -> usize {
@@ -48,6 +48,7 @@ fn count_collection_iterator(collection: &[HashMap<String, Progress>], value: Pr
     // `collection` is a slice of hash maps.
     // collection = [{ "variables1": Complete, "from_str": None, … },
     //               { "variables2": Complete, … }, … ]
+    collection.iter().flat_map(|map| map.values()).filter(|&val| *val == value).count()
 }
 
 fn main() {
@@ -60,7 +61,6 @@ mod tests {
 
     fn get_map() -> HashMap<String, Progress> {
         use Progress::*;
-
         let mut map = HashMap::new();
         map.insert(String::from("variables1"), Complete);
         map.insert(String::from("functions1"), Complete);
@@ -68,22 +68,18 @@ mod tests {
         map.insert(String::from("arc1"), Some);
         map.insert(String::from("as_ref_mut"), None);
         map.insert(String::from("from_str"), None);
-
         map
     }
 
     fn get_vec_map() -> Vec<HashMap<String, Progress>> {
         use Progress::*;
-
         let map = get_map();
-
         let mut other = HashMap::new();
         other.insert(String::from("variables2"), Complete);
         other.insert(String::from("functions2"), Complete);
         other.insert(String::from("if1"), Complete);
         other.insert(String::from("from_into"), None);
         other.insert(String::from("try_from_into"), None);
-
         vec![map, other]
     }
 
@@ -142,7 +138,6 @@ mod tests {
     fn count_collection_equals_for() {
         let collection = get_vec_map();
         let progress_states = [Progress::Complete, Progress::Some, Progress::None];
-
         for progress_state in progress_states {
             assert_eq!(
                 count_collection_for(&collection, progress_state),
